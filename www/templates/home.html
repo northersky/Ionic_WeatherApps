@@ -1,7 +1,12 @@
 <ion-view view-title="Home">
-  <ion-content class="padding">
-    <p>
-      <a ui-sref="about">About</a>
-    </p>
+  <ion-content>
+    <form class="list" ng-submit="search(city)">
+      <label class="item item-input">
+        <input type="text" placeholder="Please enter a city" ng-model="city">
+      </label>
+      <div class="padding">
+        <button class="button button-block button-positive">Submit</button>
+      </div>
+    </form>
   </ion-content>
 </ion-view>

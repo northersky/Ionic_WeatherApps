@@ -7,7 +7,7 @@ angular.module('starter', ['ionic'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
-    if(window.cordova && window.cordova.plugins.Keyboard) {
+    if (window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -17,24 +17,47 @@ angular.module('starter', ['ionic'])
       // a much nicer keyboard experience.
       cordova.plugins.Keyboard.disableScroll(true);
     }
-    if(window.StatusBar) {
+    if (window.StatusBar) {
       StatusBar.styleDefault();
     }
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.controller('HomeCtrl', function($scope, $ionicLoading, $state) {
+    $scope.search = function(city) {
+      $state.go('weather', {
+        city: city
+      });
+    };
+  })
+  .controller('WeatherCtrl', function($scope, $stateParams, $http, $ionicLoading) {
+    $ionicLoading.show({
+      template: 'Loading...'
+    });
+    url = "http://api.openweathermap.org/data/2.5/forecast?q=" + $stateParams.city + "&mode=json&units=metrics&cnt=10&appid=44db6a862fba0b067b1930da0d769e98";
+    $http.get(url).success(function(response) {
+      $ionicLoading.hide();
+      $scope.city = $stateParams.city
+      $scope.weather = response;
+    });
+  })
+  .config(function($stateProvider, $urlRouterProvider) {
 
     $stateProvider.state('home', {
       url: '/home',
       templateUrl: 'templates/home.html',
-      //controller: 'HomeCtrl'
-    })
+      controller: 'HomeCtrl'
+    });
     $stateProvider.state('about', {
       url: '/about',
       templateUrl: 'templates/about.html',
       //controller: 'AboutCtrl'
     });
+    $stateProvider.state('weather', {
+      url: '/weather/:city',
+      templateUrl: 'templates/weather.html',
+      controller: 'WeatherCtrl'
+    });
 
     $urlRouterProvider.otherwise('/home')
-});
+  });
